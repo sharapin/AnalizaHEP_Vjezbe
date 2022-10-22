@@ -1,0 +1,4 @@
+total 8
+-rw-r--r--. 1 sharapin sharapin  0 Oct 22 12:05 output_3.txt
+-rw-r--r--. 1 sharapin sharapin 39 Oct 22 10:50 Zadatak_2.txt
+-rw-r--r--. 1 sharapin sharapin 38 Oct 22 12:05 Zadatak_3.sh
