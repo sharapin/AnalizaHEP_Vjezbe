@@ -1,18 +1,51 @@
 #include<string>
+#include<math.h>
+#include"ElementaryParticle.h"
 #include<iostream>
 using namespace std;
 
-#include "ElementaryParticle.h"
 
-int main()
-{
+
+  ElementaryParticle::ElementaryParticle(string n, double m, string s)
+  {
+    name=n;
+    mass=m;
+    spin=s;
+  }
   
-  ElementaryParticle Higgs("Higgs Boson",125,"boson");
-  ElementaryParticle Top("Top Quark",173,"fermion");
-  ElementaryParticle Z("Z Boson",91,"boson");  
+               
+  void ElementaryParticle::printInfo()
+  {
+    cout<<endl;
+    cout<< "Name: " << name <<endl;
+    cout<< "Mass: " << mass <<endl;
+    cout<< "Spin Type: " << spin <<endl;
+    cout<<endl;  
+  } 
+  
 
-  Higgs.printInfo();  
-  Top.printInfo();
-  Z.printInfo();
+  void ElementaryParticle::InsertImpulsF()
+  {
+    cout<<"Insert impuls intensity for a chosen particle: "<<endl;
+    cout<<"Impuls in x-direction: "; cin>>impulsx;
+    cout<<"Impuls in y-direction: "; cin>>impulsy;
+    cout<<"Impuls in z-direction: "; cin>>impulsz;
+  }
 
-}
+
+  double ElementaryParticle::EnergyF(double impulsx, double impulsy, double impulsz) 
+  {  
+    Energy=sqrt(pow(sqrt(impulsx*impulsx + impulsy*impulsy + impulsz*impulsz),2)+mass*mass);   
+
+  return Energy; 
+  }
+  
+
+  double ElementaryParticle::TransImpulsF(double impulsx, double impulsy, double impulsz)
+  {
+    TransImpuls=sqrt(impulsx*impulsx + impulsy*impulsy); 
+
+    return TransImpuls; 
+  }
+
+};	
