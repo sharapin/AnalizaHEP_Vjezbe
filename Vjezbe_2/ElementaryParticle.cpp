@@ -13,6 +13,9 @@ using namespace std;
     spin=s;
   }
   
+  ElementaryParticle::ElementaryParticle()
+  {}
+
                
   void ElementaryParticle::printInfo()
   {
@@ -48,4 +51,11 @@ using namespace std;
     return TransImpuls; 
   }
 
-};	
+
+  void ElementaryParticle::bosonDecay(ElementaryParticle* decayParticle_1, ElementaryParticle* decayParticle_2)
+  {
+    if(spin!="boson")
+      cout<<"Decay is not possible. "<<endl;
+    else
+      cout<<"Particle is boson. "<<endl; 
+  }	

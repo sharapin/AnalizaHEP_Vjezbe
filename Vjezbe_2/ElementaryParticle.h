@@ -6,6 +6,9 @@ using namespace std;
 class ElementaryParticle
 { 
   public:
+  
+  ElementaryParticle(string name, double mass, string spin); 
+  ElementaryParticle();
 
   string name;
   double mass;
@@ -15,15 +18,17 @@ class ElementaryParticle
   double impulsz;  
   double Energy;  
   double TransImpuls;
-
+  
                
   void printInfo();
 
   void InsertImpulsF();
 
-  double EnergyF(double impulsx, double impulsy, double impulsz); 
+  double EnergyF(double, double, double); 
 
-  double TransImpulsF(double impulsx, double impulsy, double impulsz);
+  double TransImpulsF(double, double, double);
+
+  void bosonDecay(ElementaryParticle*, ElementaryParticle*);
 
 
 };	
