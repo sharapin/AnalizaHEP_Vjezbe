@@ -77,7 +77,7 @@ int main()
 
 */
 /////////////////////   C   ///////////////////////////////
-/*
+
 
   ElementaryParticle Higgs("Higgs Boson",125,"boson");
   ElementaryParticle Top("Top Quark",173,"boson");
@@ -97,7 +97,7 @@ int main()
   cout<< "Spin Type: " << Z.spin <<endl; 
   cout<<endl;
 
-*/
+
 ////////////////////////   D   ////////////////////////////
 /*
   
