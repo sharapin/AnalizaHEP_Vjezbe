@@ -18,7 +18,7 @@ class Analyzer{
 	double LPL(int, double); //Lower Poisson Limit
 
  private:
-	double CL, UP, LP, lambda;
+	double CL, UP=0, LP=0, lambda;
 	int r; 
 
 };
