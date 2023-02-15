@@ -35,6 +35,8 @@ void Analyzer::Fit(){
 	f -> SetParameter(0, 0.2);
 	f -> SetParameter(1, 2.);
 
+        hist -> SetMaximum(0.1);        
+
 	hist -> Fit(f, "L", "", 0, 1);
 
 	hist -> SetTitle("Fit_Function");
