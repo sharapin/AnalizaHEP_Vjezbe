@@ -38,7 +38,7 @@ void Analyzer::Fit(){
         hist -> SetMaximum(1.);        
         hist -> SetMinimum(-1.);        
 
-	hist -> Fit(f, "L", "", 0, 0.012);
+	hist -> Fit(f, "L",0.1,10);
 
 	hist -> SetTitle("Fit_Function");
 	hist -> GetXaxis() -> SetTitle("x");
