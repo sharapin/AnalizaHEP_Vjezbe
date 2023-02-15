@@ -23,7 +23,7 @@ void Analyzer::Fit(){
 	Long64_t nentries = tree -> GetEntriesFast();
 	canvas = new TCanvas();
 	canvas -> SetCanvasSize(700, 700);
-	hist = new TH1F("hist", "hist", 100, 0., 10.);
+	hist = new TH1F("hist", "hist", 100, 0., 1);
 	for (int i = 0; i < nentries; i++){
 
 		tree -> GetEntry(i);
@@ -31,13 +31,11 @@ void Analyzer::Fit(){
 	
 	}
 	gStyle -> SetOptStat(0);
-	f = new TF1("fit funkcija", "(TMath::Exp(-x*[1]) * TMath::Sin(x * [2]))", 10, 10);
-	f -> SetParameter(0, 224.);
-	f -> SetParameter(1, 4.);
-	f -> SetParameter(2, 3.);
-	f -> SetParameter(3, 0.3);
+	f = new TF1("fit funkcija", "(TMath::Exp(-x*[0]) * TMath::Sin(x * [1]))", 0, 1);
+	f -> SetParameter(0, 0.2);
+	f -> SetParameter(1, 2.);
 
-	hist -> Fit(f, "L", "", 10, 10);
+	hist -> Fit(f, "L", "", 0, 1);
 
 	hist -> SetTitle("Fit_Function");
 	hist -> GetXaxis() -> SetTitle("x");
@@ -46,9 +44,7 @@ void Analyzer::Fit(){
 	f -> Draw("SAME");
 	canvas -> Print("Fit_ChiSquareTree.pdf");
 
-	cout << "A =" << f -> GetParameter(0) << "±" << f -> GetParError(0) << endl;
-	cout << "alfa = " << f -> GetParameter(1) << "±" << f -> GetParError(1) << endl;
-	cout << "mu = " << f -> GetParameter(2) << "±" << f -> GetParError(2) << endl;
-	cout << "sigma = " << f -> GetParameter(3) << "±" << f -> GetParError(3) << endl;
+	cout << "alfa =" << f -> GetParameter(0) << "±" << f -> GetParError(0) << endl;
+	cout << "beta = " << f -> GetParameter(1) << "±" << f -> GetParError(1) << endl;
 
 }
