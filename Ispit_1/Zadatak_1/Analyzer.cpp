@@ -23,7 +23,7 @@ void Analyzer::Fit(){
 	Long64_t nentries = tree -> GetEntriesFast();
 	canvas = new TCanvas();
 	canvas -> SetCanvasSize(700, 700);
-	hist = new TH1F("hist", "hist", 100, 0., 1);
+	hist = new TH1F("hist", "hist", 100, 0., 0.1);
 	for (int i = 0; i < nentries; i++){
 
 		tree -> GetEntry(i);
@@ -31,7 +31,7 @@ void Analyzer::Fit(){
 	
 	}
 	gStyle -> SetOptStat(0);
-	f = new TF1("fit funkcija", "(TMath::Exp(-x*[0]) * TMath::Sin(x * [1]))", 0, 1);
+	f = new TF1("fit funkcija", "(TMath::Exp(-x*[0]) * TMath::Sin(x * [1]))", 0, 0.1);
 	f -> SetParameter(0, 0.2);
 	f -> SetParameter(1, 2.);
 
