@@ -17,7 +17,7 @@ Analyzer::~Analyzer(){
 
 void Analyzer::Fit(){
 
-	file = new TFile("/home/sharapin/Vjezbe/Ispit_1/Zadatak_1/Lifetime.root");
+	file = new TFile("/home/public/data/Toy/ChiSquareTree.root");
 	tree = (TTree*)file -> Get("tree");
 	tree -> SetBranchAddress("var", &var);
 	Long64_t nentries = tree -> GetEntriesFast();
@@ -31,7 +31,7 @@ void Analyzer::Fit(){
 	
 	}
 	gStyle -> SetOptStat(0);
-	f = new TF1("fit funkcija", "[0] * (TMath::Exp(-x / [1]) + TMath::Exp(-(x - [2]) * (x - [2]) / 2. / [3] / [3]))", 0, 10);
+	f = new TF1("fit funkcija", "(TMath::Exp(-x*[1]) * TMath::Sin(x * [2])", 0, 10);
 	f -> SetParameter(0, 224.);
 	f -> SetParameter(1, 4.);
 	f -> SetParameter(2, 3.);
@@ -39,12 +39,12 @@ void Analyzer::Fit(){
 
 	hist -> Fit(f, "L", "", 0, 10);
 
-	hist -> SetTitle("Fit");
-	hist -> GetXaxis() -> SetTitle("var");
+	hist -> SetTitle("Fit_Function");
+	hist -> GetXaxis() -> SetTitle("x");
 
 	hist -> Draw("HIST");
 	f -> Draw("SAME");
-	canvas -> Print("Fit.pdf");
+	canvas -> Print("Fit_ChiSquareTree.pdf");
 
 	cout << "A =" << f -> GetParameter(0) << "±" << f -> GetParError(0) << endl;
 	cout << "alfa = " << f -> GetParameter(1) << "±" << f -> GetParError(1) << endl;

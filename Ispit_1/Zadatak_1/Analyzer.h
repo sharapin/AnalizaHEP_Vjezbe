@@ -1,4 +1,4 @@
-wq#include<TROOT.h>
+#include<TROOT.h>
 #include<TChain.h>
 #include<TFile.h>
 #include<TH1F.h>
