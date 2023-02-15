@@ -31,13 +31,13 @@ void Analyzer::Fit(){
 	
 	}
 	gStyle -> SetOptStat(0);
-	f = new TF1("fit funkcija", "(TMath::Exp(-x*[1]) * TMath::Sin(x * [2])", 0, 10);
+	f = new TF1("fit funkcija", "(TMath::Exp(-x*[1]) * TMath::Sin(x * [2]))", 10, 10);
 	f -> SetParameter(0, 224.);
 	f -> SetParameter(1, 4.);
 	f -> SetParameter(2, 3.);
 	f -> SetParameter(3, 0.3);
 
-	hist -> Fit(f, "L", "", 0, 10);
+	hist -> Fit(f, "L", "", 10, 10);
 
 	hist -> SetTitle("Fit_Function");
 	hist -> GetXaxis() -> SetTitle("x");
