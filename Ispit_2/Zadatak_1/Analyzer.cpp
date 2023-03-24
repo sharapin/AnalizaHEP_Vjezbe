@@ -1,103 +1,91 @@
 #define Analyzer_cxx
 #include "Analyzer.h"
-#include <TH2.h>
-#include <TStyle.h>
+#include <iostream>
+#include <TFile.h>
+#include <TTree.h>
+#include <TF1.h>
+#include <TH1F.h>
 #include <TCanvas.h>
+#include <TLegend.h>
+#include <TStyle.h>
 
-void Analyzer::Loop()
+Analyzer::Analyzer()
 {
-//   In a ROOT session, you can do:
-//      root> .L Analyzer.C
-//      root> Analyzer t
-//      root> t.GetEntry(12); // Fill t data members with entry number 12
-//      root> t.Show();       // Show values of entry 12
-//      root> t.Show(16);     // Read and show values of entry 16
-//      root> t.Loop();       // Loop on all entries
-//
-
-//     This is the loop skeleton where:
-//    jentry is the global entry number in the chain
-//    ientry is the entry number in the current Tree
-//  Note that the argument to GetEntry must be:
-//    jentry for TChain::GetEntry
-//    ientry for TTree::GetEntry and TBranch::GetEntry
-//
-//       To read only selected branches, Insert statements like:
-// METHOD1:
-//    fChain->SetBranchStatus("*",0);  // disable all branches
-//    fChain->SetBranchStatus("branchname",1);  // activate branchname
-// METHOD2: replace line
-//    fChain->GetEntry(jentry);       //read all branches
-//by  b_branchname->GetEntry(ientry); //read only this branch
-   if (fChain == 0) return;
-
-   Long64_t nentries = fChain->GetEntriesFast();
-
-   Long64_t nbytes = 0, nb = 0;
-   for (Long64_t jentry=0; jentry<nentries;jentry++) {
-      Long64_t ientry = LoadTree(jentry);
-      if (ientry < 0) break;
-      nb = fChain->GetEntry(jentry);   nbytes += nb;
-      // if (Cut(ientry) < 0) continue;
-   }
 }
 
+Analyzer::~Analyzer()
+{
+}
 
-void Analyzer::ChiSquareFit(){
-   TCanvas *c = new TCanvas("c", "c", 1200, 800);
-   gStyle->SetOptFit();
-   
-   float x_array[11];
-   float y_array[11];
-   float sigma_y[11];
-   float sigma_x[11];
-   
+void Analyzer::Histogram()
+{
+    TFile *file = new TFile("/home/public/data/Toy/Gauss.root");
+    TTree *tree = static_cast<TTree*>(file->Get("tree"));
 
-   fit_funciton = new TF1("fit_function", "[0]*TMath::Exp(-[1]*x)*TMath::Sin([2]*x)",0.1, 10.);
-   fit_funciton -> SetParName(0, "A");
-   fit_funciton -> SetParName(1, "alpha");
-   fit_funciton -> SetParName(2, "beta");
+    double x_observed;
+    tree->SetBranchAddress("x_observed", &x_observed);
 
-   fit_funciton -> SetParameter(0, 0.2);
-   fit_funciton -> SetParameter(1, 0.2);
-   fit_funciton -> SetParameter(2, 2.);
+    // Define null and alternative hypotheses
+    TF1 nullHypothesis("nullHypothesis", "gaus", 0, 15);
+    nullHypothesis.SetParameters(1, 3, 1.5);
 
+    TF1 alternativeHypothesis("alternativeHypothesis", "gaus", 0, 15);
+    alternativeHypothesis.SetParameters(1, 7, 1.5);
 
+    // Create histograms for test statistics
+    TH1F histNullTestStat("histNullTestStat", "Null Hypothesis Test Statistic", 150, 0, 15);
+    TH1F histAltTestStat("histAltTestStat", "Alternative Hypothesis Test Statistic", 150, 0, 15);
 
-   if (fChain == 0) return;
+    // Generate test statistics and fill histograms
+    int nTestStat = 10000;
+    for (int i = 0; i < nTestStat; ++i) {
+        histNullTestStat.Fill(nullHypothesis.GetRandom());
+        histAltTestStat.Fill(alternativeHypothesis.GetRandom());
+    }
 
-   Long64_t nentries = fChain->GetEntriesFast();
+    // Normalize histograms
+    histNullTestStat.Scale(1.0 / histNullTestStat.Integral());
+    histAltTestStat.Scale(1.0 / histAltTestStat.Integral());
 
-   Long64_t nbytes = 0, nb = 0;
-   int i = 0;
-   for (Long64_t jentry=0; jentry<nentries;jentry++) {
-      Long64_t ientry = LoadTree(jentry);
-      if (ientry < 0) break;
-      nb = fChain->GetEntry(jentry);   nbytes += nb;
-      // if (Cut(ientry) < 0) continue;
-   
-      x_array[i] = x;
-      y_array[i] = y;
-      sigma_y[i] = error;
-      sigma_x[i] = 0;
-      i++;
+    // Find the critical region
+    double type2Error = 0.0;
+    double targetError = 0.7;
+    int criticalBin = 0;
+    for (int i = 1; i <= histAltTestStat.GetNbinsX(); ++i) {
+        type2Error += histAltTestStat.GetBinContent(i);
+        if (type2Error >= targetError) {
+            criticalBin = i;
+            break;
+        }
+    }
 
-   }
-   gr = new TGraphErrors(11,x_array,y_array,sigma_x,sigma_y);
-   gr -> Fit(fit_funciton);
+    // Calculate critical sigma
+    double criticalSigma = histAltTestStat.GetBinCenter(criticalBin);
 
-   gr -> SetTitle("Chi-Square function fit");
-   gr -> SetMarkerColor(kBlack);
-   gr -> SetMarkerStyle(21);
-   gr -> SetMaximum(0.9);
-   gr -> SetMinimum(-0.7); 
-   gr -> GetXaxis() -> SetTitle("x");
-   gr -> GetYaxis() -> SetTitle("y");
-   gr -> Draw("AP");
-   
-   c -> SaveAs("histo.pdf");
+    // Calculate p-value
+    double pValue = 1 - histNullTestStat.Integral(histNullTestStat.FindBin(histAltTestStat.GetBinLowEdge(1)), criticalBin);
 
-   cout << "alpha = " << fit_funciton -> GetParameter(1) << " +- " << fit_funciton -> GetParError(1) << "\n";
-   cout << "beta = " << fit_funciton -> GetParameter(2) << " +- " << fit_funciton -> GetParError(2) << "\n";
+    // Print results
+    std::cout << "Critical Sigma: " << criticalSigma << std::endl;
+    std::cout << "P-Value: " << pValue << std::endl;
 
+    TCanvas c("hyptest", "hyptest", 1000, 700);
+
+    gStyle->SetOptStat(0);
+
+    histNullTestStat.SetFillColor(kRed - 2);
+    histNullTestStat.SetLineColor(kRed - 2);
+
+    histNullTestStat.SetTitle("Hypothesis testing");
+    histNullTestStat.GetXaxis()->SetTitle("x");
+    histNullTestStat.GetYaxis()->SetTitle("x frequency");
+
+    histNullTestStat.Draw("HIST");
+
+    histAltTestStat.SetFillColor(kBlue - 4);
+    histAltTestStat.SetLineColor(kBlue - 4);
+
+    histAltTestStat.SetTitle("Hypothesis testing");
+    histAltTestStat.GetXaxis()->SetTitle("x");
+    histAlt
 }

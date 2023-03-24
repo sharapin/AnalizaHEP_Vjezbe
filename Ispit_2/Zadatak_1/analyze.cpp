@@ -1,10 +1,18 @@
+#include <iostream>
+#include <fstream>
+
+// My own class
 #include <Analyzer.h>
 
-int main(){
+using namespace std;
 
-    Analyzer *analyze = new Analyzer();
+int main()
+{
+  Analyzer* analyzer = new Analyzer();
 
-    analyze -> ChiSquareFit();
+  analyzer->Histogram();
 
-    return 0;
+  delete analyzer;
+
+  return 0;
 }
