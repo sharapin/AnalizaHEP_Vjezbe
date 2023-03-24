@@ -1,42 +1,27 @@
-/*
-#include"Analyzer.h"
+#include <cstdio>
+#include <ctime>
+#include <iostream>
+#include "Analyzer.h"
 
-int main(void){
 
-Analyzer *analyzer = new Analyzer();
-cout << "r0 = " << analyzer -> R0(10, 0.5, 0.1) << endl;
-analyzer -> ~Analyzer();
+// Princip koda je sljedeci: Na temelju danih vrijednosti za poluosi a,b i c, elipsoid "smjestamo" u kvadar. 
+// Zatim random generatorom ( ovdje je koristen implementirani C-ov generator rand() ) uzimamo tocke iz tog kvadra i zapisujemo koje su tocke upale u elipsoid, a koje ne.
+// Omjer broja tih tocaka nam daje priblizan volumen elipsoida. 
+// Greske u volumenu su prvenstveno uzrokovane neoptimiziranoscu ovog random generatora.
 
-return 0;
-}
-*/
-
-#include <stdio.h>
-#include <math.h>
-#include"Analyzer.h"
-
-double binomial(int N, int r, double p) {
-    double q = 1.0 - p;
-    double a = lgamma(N + 1) - lgamma(r + 1) - lgamma(N - r + 1);
-    double b = r * log(p) + (N - r) * log(q);
-    return exp(a + b);
-}
-
-int binomial_cutoff(int N, double p, double epsilon) {
-    double sum = 0.0;
-    int r = 0;
-    while (sum < epsilon) {
-        sum += binomial(N, r, p);
-        r++;
-    }
-    return r - 1;
-}
 
 int main() {
-    int N = 10;
-    double p = 0.5;
-    double epsilon = 0.1;
-    int r_0 = binomial_cutoff(N, p, epsilon);
-    printf("For N=%d, p=%f, and epsilon=%f, the highest value of r_0 such that P(r<r_0)<epsilon is %d.\n", N, p, epsilon, r_0);
+    double a, b, c;
+    int num_points = 1000000;
+
+    printf("Upisite zeljene vrijednosti za poluosi a, b, c: ");
+    scanf("%lf %lf %lf", &a, &b, &c);
+
+    srand(time(NULL));
+
+    Elipsoid elipsoid(a, b, c);
+    double Elipsoid_Volumen = elipsoid.volumen(num_points);
+    printf("Volumen trazenog elipsoida: %lf\n", Elipsoid_Volumen);
+
     return 0;
 }

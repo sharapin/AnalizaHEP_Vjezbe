@@ -4,7 +4,7 @@ int main(){
 
     Analyzer *analyze = new Analyzer();
 
-    analyze -> ChiSquareFit();
+    analyze -> GaussFit();
 
     return 0;
 }

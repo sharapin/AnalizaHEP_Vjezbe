@@ -1,23 +1,18 @@
-#include<TROOT.h>
-#include<TH1F.h>
-#include<TMath.h>
-#include<TCanvas.h>
-#include<TStyle.h>
-#include<iostream>
+#ifndef ELIPSOID_H
+#define ELIPSOID_H
 
-using namespace std;
+class Elipsoid {
+public:
+    Elipsoid(double a, double b, double c);
+    double volumen(int num_points);
 
+private:
+    double a_;
+    double b_;
+    double c_;
 
-class Analyzer{
-
- public:
-	Analyzer();
-	~Analyzer();
-	double Binom(int, double, int);
-	int R0(int, double, double);
-
- private:
-	double P, p, epsilon;
-	int N, r; 
-
+    bool unutar(double x, double y, double z) const;
+    double random(double min, double max) const;
 };
+
+#endif
