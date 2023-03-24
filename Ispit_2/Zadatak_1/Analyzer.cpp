@@ -1,22 +1,3 @@
-#define Analyzer_cxx
-#include "Analyzer.h"
-#include <TH2.h>
-#include <TStyle.h>
-#include <TCanvas.h>
-
-void Analyzer::Loop()
-{
-   if (!fChain) return;
-
-   Long64_t nentries = fChain->GetEntriesFast();
-   Long64_t nbytes = 0;
-
-   for (Long64_t jentry = 0; jentry < nentries; jentry++) {
-      if (LoadTree(jentry) < 0) break;
-      nbytes += fChain->GetEntry(jentry);
-   }
-}
-
 void Analyzer::GaussFit()
 {
    TCanvas *c = new TCanvas("c", "c", 1200, 800);
@@ -41,14 +22,17 @@ void Analyzer::GaussFit()
       nbytes += fChain->GetEntry(jentry);
 
       x_array[i] = x_observed;
+      y_array[i] = y;
+      sigma_y[i] = error;
       sigma_x[i] = 0;
       i++;
    }
 
-   gr = new TGraphErrors(11, x_array, sigma_x);
+
+   gr = new TGraphErrors(11, x_array, y_array, sigma_x, sigma_y); // Fixed constructor
    gr->Fit(Gauss);
 
-   gr->SetTitle("Gauss fit");
+   gr->SetTitle("Gaussian fit");
    gr->SetMarkerColor(kBlack);
    gr->SetMarkerStyle(21);
    gr->SetMaximum(0.9);

@@ -25,17 +25,6 @@
 
 // ... (Other includes and using statements)
 
-class Analyzer {
-public:
-   // ... (Other member variables and functions)
-
-   virtual void     GaussFit(); // Updated function name
-
-private:
-   TGraphErrors *gr;
-   TF1 *Gauss;
-
-};
 
 #endif
 
